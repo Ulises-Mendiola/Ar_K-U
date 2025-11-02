@@ -2,13 +2,23 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>AR Video</title>
+    <title>AR Video Manual</title>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
     <style>
       body {
         margin: 0;
         overflow: hidden;
+      }
+      video {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80%;
+        max-width: 400px;
+        z-index: 10;
+        border-radius: 10px;
       }
     </style>
   </head>
@@ -21,24 +31,18 @@
       
       <!-- Marcador personalizado -->
       <a-marker type="pattern" url="marcador.patt">
-        <a-video
-          src="#miVideo"
-          width="1.2"
-          height="0.7"
-          position="0 0 0">
-        </a-video>
+        <a-plane color="#ffffff" width="1.2" height="0.7"></a-plane>
       </a-marker>
 
       <!-- Cámara -->
       <a-entity camera></a-entity>
     </a-scene>
 
-    <!-- Video oculto -->
+    <!-- Video manual -->
     <video id="miVideo"
            src="Hola.mp4"
            loop
-           muted
-           autoplay
+           controls
            crossorigin="anonymous"
            playsinline
            webkit-playsinline>
@@ -48,13 +52,14 @@
       const marker = document.querySelector('a-marker');
       const video = document.getElementById('miVideo');
 
-      // Reproduce cuando se detecta el marcador
+      // Mostrar controles de video cuando el marcador se detecta
       marker.addEventListener('markerFound', () => {
-        video.play();
+        video.style.display = 'block';
       });
 
-      // Pausa cuando se pierde el marcador
+      // Ocultar cuando se pierde el marcador
       marker.addEventListener('markerLost', () => {
+        video.style.display = 'none';
         video.pause();
       });
     </script>
