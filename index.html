@@ -2,28 +2,61 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Video AR personalizado</title>
+    <title>AR Video</title>
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-    <style>body{margin:0;overflow:hidden;}</style>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+    </style>
   </head>
   <body>
-    <a-scene embedded vr-mode-ui="enabled: false" arjs="sourceType: webcam; debugUIEnabled: false;">
+    <!-- Escena de Realidad Aumentada -->
+    <a-scene
+      embedded
+      vr-mode-ui="enabled: false"
+      arjs="sourceType: webcam; debugUIEnabled: false;">
+      
+      <!-- Marcador personalizado -->
       <a-marker type="pattern" url="marcador.patt">
-        <a-video src="#miVideo" width="1.5" height="0.9" position="0 0 0"></a-video>
+        <a-video
+          src="#miVideo"
+          width="1.2"
+          height="0.7"
+          position="0 0 0">
+        </a-video>
       </a-marker>
+
+      <!-- Cámara -->
       <a-entity camera></a-entity>
     </a-scene>
 
-    <video id="miVideo" src="video.mp4" loop crossorigin="anonymous" playsinline webkit-playsinline></video>
+    <!-- Video oculto -->
+    <video id="miVideo"
+           src="Hola.mp4"
+           loop
+           muted
+           autoplay
+           crossorigin="anonymous"
+           playsinline
+           webkit-playsinline>
+    </video>
 
     <script>
       const marker = document.querySelector('a-marker');
       const video = document.getElementById('miVideo');
+
+      // Reproduce cuando se detecta el marcador
       marker.addEventListener('markerFound', () => {
-        video.play().catch(() => alert('Toca la pantalla para iniciar el video'));
+        video.play();
       });
-      marker.addEventListener('markerLost', () => video.pause());
+
+      // Pausa cuando se pierde el marcador
+      marker.addEventListener('markerLost', () => {
+        video.pause();
+      });
     </script>
   </body>
 </html>
