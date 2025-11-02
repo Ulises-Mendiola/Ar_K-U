@@ -2,7 +2,7 @@
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <title>AR Video Manual Responsive</title>
+    <title>AR Video sobre marcador</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     
     <!-- Librerías AR.js + A-Frame -->
@@ -18,68 +18,59 @@
         height: 100%;
         width: 100%;
       }
-
-      /* Contenedor de video sobrepuesto */
-      video {
-        position: fixed;
-        bottom: 2%;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 90vw;        /* 90% del ancho de la pantalla */
-        max-width: 480px;   /* límite máximo en pantallas grandes */
-        border-radius: 10px;
-        z-index: 10;
-        display: none;
-      }
-
-      /* Ajustes para pantallas pequeñas */
-      @media (max-width: 600px) {
-        video {
-          width: 95vw;
-          bottom: 3%;
-        }
-      }
     </style>
   </head>
   <body>
-    <!-- Escena principal AR -->
+    <!-- Escena de Realidad Aumentada -->
     <a-scene
       embedded
       arjs="sourceType: webcam; debugUIEnabled: false;"
       vr-mode-ui="enabled: false">
       
       <!-- Marcador personalizado -->
-      <a-marker type="pattern" url="marcador.patt">
-        <a-plane color="#ffffff" width="1.2" height="0.7" position="0 0 0"></a-plane>
+      <a-marker type="pattern" url="marcador.patt" id="marcador">
+        <!-- Video 3D: aparece solo al detectar el marcador -->
+        <a-video
+          id="videoAR"
+          src="#videoHTML"
+          width="1.2"
+          height="0.7"
+          position="0 0 0"
+          rotation="-90 0 0"
+          visible="false">
+        </a-video>
       </a-marker>
 
       <!-- Cámara -->
       <a-entity camera></a-entity>
     </a-scene>
 
-    <!-- Video manual, visible al detectar marcador -->
-    <video id="miVideo"
+    <!-- Video fuente (HTML) -->
+    <video id="videoHTML"
            src="Hola.mp4"
            loop
-           controls
            crossorigin="anonymous"
            playsinline
-           webkit-playsinline>
+           webkit-playsinline
+           controls
+           style="display:none">
     </video>
 
     <script>
-      const marker = document.querySelector('a-marker');
-      const video = document.getElementById('miVideo');
+      const marker = document.getElementById('marcador');
+      const videoAR = document.getElementById('videoAR');
+      const videoHTML = document.getElementById('videoHTML');
 
-      // Mostrar controles del video cuando el marcador se detecta
+      // Cuando se detecta el marcador
       marker.addEventListener('markerFound', () => {
-        video.style.display = 'block';
+        videoAR.setAttribute('visible', 'true');
+        videoHTML.play().catch(() => {});
       });
 
-      // Ocultar el video cuando se pierde el marcador
+      // Cuando se pierde el marcador
       marker.addEventListener('markerLost', () => {
-        video.style.display = 'none';
-        video.pause();
+        videoAR.setAttribute('visible', 'false');
+        videoHTML.pause();
       });
     </script>
   </body>
